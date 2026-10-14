@@ -1,0 +1,10 @@
+{
+  "name": "nexo-digital",
+  "version": "1.0.0",
+  "description": "Site institucional da Nexo Digital: criação de sites, landing pages, lojas virtuais e manutenção.",
+  "private": true,
+  "scripts": {
+    "dev": "npx serve . -l 3000"
+  },
+  "keywords": ["landing-page", "site", "vercel", "html", "css", "javascript"]
+}
