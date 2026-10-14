@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101014">
+  <meta name="description" content="Nexo Digital: criação de sites profissionais, landing pages, lojas virtuais e manutenção de sites. Solicite seu orçamento.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:title" content="Nexo Digital | Criação de Sites">
+  <meta property="og:description" content="Sites profissionais, landing pages, lojas virtuais e manutenção. Solicite seu orçamento.">
+  <title>Nexo Digital | Criação de Sites</title>
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <header>
+    <nav class="container" aria-label="Navegação principal">
+      <a class="logo" href="#inicio">NEXO<span>DIGITAL</span></a>
+
+      <div class="nav-links">
+        <a href="#inicio">Início</a>
+        <a href="#servicos">Serviços</a>
+        <a class="btn" href="#orcamento">Orçamento ↗</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="container hero-content">
+        <span class="eyebrow">✦ Soluções digitais para seu negócio</span>
+
+        <h1>
+          Sua presença digital<br>
+          começa <span>aqui.</span>
+        </h1>
+
+        <p>
+          Criamos sites modernos e profissionais para empresas e
+          empreendedores que querem fortalecer sua marca, conquistar
+          clientes e crescer na internet.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn" href="#orcamento">Solicitar orçamento ↗</a>
+          <a class="btn btn-outline" href="#servicos">Conhecer serviços</a>
+        </div>
+
+        <div class="benefits">
+          <span>Design personalizado</span>
+          <span>Sites responsivos</span>
+          <span>Atendimento direto</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="services" id="servicos">
+      <div class="container">
+        <div class="section-heading">
+          <h2>Soluções para o seu negócio</h2>
+          <p>
+            Do primeiro contato com sua marca até a venda online,
+            encontre a solução ideal para o seu projeto.
+          </p>
+        </div>
+
+        <div class="services-grid" id="lista-servicos"></div>
+      </div>
+    </section>
+
+    <section id="como-funciona">
+      <div class="container">
+        <div class="section-heading">
+          <h2>Do planejamento à publicação</h2>
+          <p>Um processo simples para tirar seu projeto do papel.</p>
+        </div>
+
+        <div class="process-grid">
+          <article class="process-card">
+            <span class="process-number">ETAPA 01</span>
+            <h3>Você conta sua ideia</h3>
+            <p>
+              Entendemos seu negócio, seus objetivos e o que você
+              precisa para sua presença digital.
+            </p>
+          </article>
+
+          <article class="process-card">
+            <span class="process-number">ETAPA 02</span>
+            <h3>Receba sua proposta</h3>
+            <p>
+              Conversamos sobre o escopo, o investimento e o prazo
+              adequado para o seu projeto.
+            </p>
+          </article>
+
+          <article class="process-card">
+            <span class="process-number">ETAPA 03</span>
+            <h3>Seu projeto ganha vida</h3>
+            <p>
+              Após a aprovação das condições, iniciamos o desenvolvimento
+              do site conforme o combinado.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="quote-section" id="orcamento">
+      <div class="container quote-layout">
+        <div class="quote-info">
+          <span class="eyebrow">Vamos conversar?</span>
+          <h2>Conte sua ideia. Vamos criar algo incrível.</h2>
+          <p>
+            Preencha os dados ao lado para solicitar seu orçamento.
+            Sua mensagem será organizada e enviada pelo WhatsApp.
+          </p>
+
+          <div class="quote-note">
+            <strong>Sem compromisso.</strong><br>
+            Analisaremos as informações do seu projeto e conversaremos
+            sobre as melhores opções para sua necessidade.
+          </div>
+        </div>
+
+        <form class="quote-form" id="form-orcamento">
+          <div class="form-row">
+            <div class="field">
+              <label for="nome">Seu nome *</label>
+              <input id="nome" name="nome" type="text"
+                placeholder="Como podemos chamar você?" required
+                maxlength="100">
+            </div>
+
+            <div class="field">
+              <label for="empresa">Empresa (opcional)</label>
+              <input id="empresa" name="empresa" type="text"
+                placeholder="Nome da empresa" maxlength="120">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="tipo">Qual serviço você precisa? *</label>
+            <select id="tipo" name="tipo" required>
+              <option value="">Selecione uma opção</option>
+              <option>Landing page</option>
+              <option>Site empresarial</option>
+              <option>Loja virtual</option>
+              <option>Manutenção de site</option>
+              <option>Outro projeto</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="descricao">Conte um pouco sobre o projeto *</label>
+            <textarea id="descricao" name="descricao"
+              placeholder="O que você deseja criar ou melhorar?"
+              required maxlength="2000"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="prazo">Prazo desejado</label>
+              <select id="prazo" name="prazo">
+                <option value="">Ainda não defini</option>
+                <option>O mais breve possível</option>
+                <option>Em até 15 dias</option>
+                <option>Em até 30 dias</option>
+                <option>Sem prazo definido</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="orcamento-valor">Investimento previsto</label>
+              <select id="orcamento-valor" name="investimento">
+                <option value="">Prefiro conversar</option>
+                <option>Até R$ 500</option>
+                <option>R$ 500 a R$ 1.000</option>
+                <option>R$ 1.000 a R$ 2.500</option>
+                <option>Acima de R$ 2.500</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="btn" type="submit">
+            Enviar solicitação pelo WhatsApp ↗
+          </button>
+
+          <p class="form-hint">
+            O WhatsApp será aberto para você revisar e enviar a mensagem.
+          </p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-content">
+      <a class="logo" href="#inicio">NEXO<span>DIGITAL</span></a>
+      <p>© <span id="ano"></span> Nexo Digital. Todos os direitos reservados.</p>
+      <a href="#inicio">Voltar ao início ↑</a>
+    </div>
+  </footer>
+
+  <a class="whatsapp-float"
+     href="https://wa.me/5585997674228"
+     target="_blank"
+     rel="noopener noreferrer"
+     aria-label="Conversar pelo WhatsApp"
+     title="Fale conosco pelo WhatsApp">☏</a>
+
+  <script src="js/main.js" defer></script>
+</body>
+</html>
