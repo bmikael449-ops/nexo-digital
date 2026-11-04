@@ -7,11 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>VideoDown - Instagram Downloader</title>
-
 <meta name="description" content="Consulte Reels e vídeos do Instagram com VideoDown.">
 
 <style>
-
 * {
   margin: 0;
   padding: 0;
@@ -87,6 +85,10 @@ input {
   border: 1px solid #ddd;
   border-radius: 8px;
   font-size: 15px;
+}
+
+input:focus {
+  outline: 2px solid #ed2525;
 }
 
 button {
@@ -166,7 +168,6 @@ footer {
 }
 
 @media(max-width:600px) {
-
   .hero {
     padding: 55px 15px;
   }
@@ -178,9 +179,7 @@ footer {
   iframe {
     height: 400px;
   }
-
 }
-
 </style>
 </head>
 
@@ -193,13 +192,8 @@ footer {
 </header>
 
 <section class="hero">
-
   <h1>Instagram Video Downloader</h1>
-
-  <p>
-    Consulte Reels e vídeos do Instagram facilmente.
-  </p>
-
+  <p>Consulte Reels e vídeos do Instagram facilmente.</p>
 </section>
 
 <main class="container">
@@ -208,14 +202,13 @@ footer {
 
     <h2>Baixar vídeo do Instagram</h2>
 
-    <p>
-      Cole o link do vídeo ou Reel abaixo.
-    </p>
+    <p>Cole o link do vídeo ou Reel abaixo.</p>
 
     <input
       type="url"
       id="url"
       placeholder="Cole o link do Instagram aqui..."
+      autocomplete="url"
     >
 
     <button id="btn" onclick="consultar()">
@@ -223,11 +216,8 @@ footer {
     </button>
 
     <div id="resultado">
-
       <div id="preview"></div>
-
       <div id="mensagem"></div>
-
     </div>
 
   </section>
@@ -237,15 +227,10 @@ footer {
   </div>
 
   <section class="steps">
-
     <h2>Como funciona?</h2>
-
     <div>🔗 1. Copie o link do Instagram.</div>
-
     <div>📋 2. Cole no VideoDown.</div>
-
     <div>📥 3. Consulte a publicação.</div>
-
   </section>
 
   <div class="ads">
@@ -255,13 +240,9 @@ footer {
 </main>
 
 <footer>
-
   <strong>VideoDown</strong><br>
-
   Instagram Video Downloader<br>
-
   © 2026 VideoDown
-
 </footer>
 
 <script>
@@ -269,78 +250,77 @@ footer {
 async function consultar() {
 
   const url = document.getElementById("url").value.trim();
-
   const resultado = document.getElementById("resultado");
-
   const preview = document.getElementById("preview");
-
   const mensagem = document.getElementById("mensagem");
-
   const btn = document.getElementById("btn");
 
   resultado.style.display = "block";
-
   preview.innerHTML = "";
-
   mensagem.innerHTML = "";
 
   if (!url) {
-
-    mensagem.innerHTML =
-      '<div class="aviso">Cole um link do Instagram.</div>';
-
+    mostrarErro("Cole um link do Instagram.");
     return;
-
   }
 
   btn.disabled = true;
-
   btn.textContent = "CONSULTANDO...";
 
   try {
 
     const resposta = await fetch("/api/consultar", {
-
       method: "POST",
-
       headers: {
         "Content-Type": "application/json"
       },
-
       body: JSON.stringify({ url })
-
     });
 
-    const dados = await resposta.json();
+    // CORREÇÃO: ler a resposta como texto primeiro.
+    const texto = await resposta.text();
+
+    let dados;
+
+    try {
+      dados = JSON.parse(texto);
+    } catch {
+      throw new Error(
+        "A API não respondeu em JSON. Confira a pasta api e a publicação na Vercel."
+      );
+    }
 
     if (!resposta.ok) {
+      throw new Error(dados.erro || "Erro ao consultar o link.");
+    }
 
-      throw new Error(dados.erro);
-
+    if (!dados.sucesso || !dados.embed) {
+      throw new Error("Não foi possível identificar a publicação.");
     }
 
     const iframe = document.createElement("iframe");
 
     iframe.src = dados.embed;
-
     iframe.title = "Prévia do Instagram";
-
     iframe.loading = "lazy";
+    iframe.allowFullscreen = true;
 
     preview.appendChild(iframe);
 
-    mensagem.innerHTML =
-      '<div class="aviso">Publicação identificada! A pré-visualização depende das configurações do Instagram. O download automático ainda requer uma integração de arquivos compatível.</div>';
+    const aviso = document.createElement("div");
+    aviso.className = "aviso";
+    aviso.textContent =
+      "Publicação identificada! A pré-visualização depende das configurações do Instagram. O download automático ainda necessita de uma integração compatível.";
+
+    mensagem.appendChild(aviso);
 
   } catch (erro) {
 
-    mensagem.innerHTML =
-      '<div class="aviso">' + escapar(erro.message) + '</div>';
+    mostrarErro(erro.message);
 
   } finally {
 
     btn.disabled = false;
-
     btn.textContent = "BAIXAR VÍDEO";
 
   }
@@ -349,16 +329,18 @@ async function consultar() {
     behavior: "smooth",
     block: "nearest"
   });
-
 }
 
-function escapar(texto) {
+function mostrarErro(texto) {
 
-  const div = document.createElement("div");
+  const mensagem = document.getElementById("mensagem");
 
-  div.textContent = texto;
+  const aviso = document.createElement("div");
 
-  return div.innerHTML;
+  aviso.className = "aviso";
+  aviso.textContent = texto;
+
+  mensagem.appendChild(aviso);
 
 }
 
@@ -366,5 +348,3 @@ function escapar(texto) {
 
 </body>
 </html>
-
-
