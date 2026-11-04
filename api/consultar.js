@@ -64,7 +64,7 @@ export default async function handler(req, res) {
     const token = process.env.APIFY_TOKEN;
 
     if (!token) {
-      console.error("APIFY_TOKEN não configurado na Vercel.");
+      console.error("APIFY_TOKEN não configurado.");
 
       return res.status(500).json({
         sucesso: false,
@@ -84,7 +84,7 @@ export default async function handler(req, res) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        url: parsed.href
+        postUrls: [parsed.href]
       }),
       signal: AbortSignal.timeout(120000)
     });
@@ -92,7 +92,11 @@ export default async function handler(req, res) {
     const responseText = await response.text();
 
     if (!response.ok) {
-      console.error("ERRO APIFY:", response.status, responseText);
+      console.error(
+        "ERRO APIFY:",
+        response.status,
+        responseText
+      );
 
       return res.status(502).json({
         sucesso: false,
@@ -106,7 +110,7 @@ export default async function handler(req, res) {
     try {
       data = JSON.parse(responseText);
     } catch {
-      console.error("Resposta inválida do Apify:", responseText);
+      console.error("Resposta inválida do Apify.");
 
       return res.status(502).json({
         sucesso: false,
@@ -139,13 +143,8 @@ export default async function handler(req, res) {
 
           if (
             candidate.protocol === "https:" &&
-            /\.(mp4|m3u8)(?:$|[?#])/i.test(candidate.pathname + candidate.search)
+            !ALLOWED_HOSTS.has(candidate.hostname.toLowerCase())
           ) {
-            downloadUrl = candidate.href;
-            break;
-          }
-
-          if (candidate.protocol === "https:" && key !== "url") {
             downloadUrl = candidate.href;
             break;
           }
@@ -159,7 +158,7 @@ export default async function handler(req, res) {
 
     if (!downloadUrl) {
       console.error(
-        "Apify executou, mas nenhum link reconhecido foi encontrado.",
+        "Nenhum link de vídeo reconhecido.",
         JSON.stringify(items).slice(0, 4000)
       );
 
@@ -169,7 +168,7 @@ export default async function handler(req, res) {
       });
     }
 
-    console.log("Link de vídeo encontrado com sucesso.");
+    console.log("Link de vídeo encontrado.");
 
     return res.status(200).json({
       sucesso: true,
@@ -178,7 +177,11 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error("ERRO NA FUNÇÃO:", error?.name, error?.message);
+    console.error(
+      "ERRO NA FUNÇÃO:",
+      error?.name,
+      error?.message
+    );
 
     return res.status(500).json({
       sucesso: false,
@@ -188,3 +191,4 @@ export default async function handler(req, res) {
     });
   }
 }
+
