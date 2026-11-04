@@ -1,0 +1,10 @@
+{
+  "name": "videodown",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "VideoDown - consulta de links de publicações públicas do Instagram",
+  "engines": {
+    "node": ">=18"
+  }
+}
