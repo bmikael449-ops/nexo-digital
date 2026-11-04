@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#09090f">
+  <meta name="description" content="VideoDown: consulte links públicos de Reels e vídeos do Instagram.">
+  <title>VideoDown — vídeos em um só lugar</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://www.instagram.com">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/main.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap nav">
+      <a class="brand" href="/" aria-label="VideoDown início"><span class="brand-mark">V</span>Video<span>Down</span></a>
+      <span class="nav-note">Ferramenta gratuita</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-glow"></div>
+      <div class="wrap hero-content">
+        <div class="eyebrow"><span class="live-dot"></span> SIMPLES • RÁPIDO • ONLINE</div>
+        <h1>Seus vídeos favoritos,<br><span>em um só lugar.</span></h1>
+        <p class="hero-copy">Cole o link de um Reel ou vídeo público do Instagram para consultar a publicação.</p>
+
+        <section class="tool-card" aria-labelledby="tool-title">
+          <div class="tool-heading">
+            <div class="tool-icon" aria-hidden="true">↧</div>
+            <div>
+              <h2 id="tool-title">VideoDown Downloader</h2>
+              <p>Insira o endereço da publicação abaixo.</p>
+            </div>
+          </div>
+          <form id="download-form" novalidate>
+            <label class="sr-only" for="video-url">Link do Instagram</label>
+            <div class="input-wrap">
+              <span aria-hidden="true">🔗</span>
+              <input id="video-url" name="url" type="url" inputmode="url" autocomplete="url"
+                placeholder="https://www.instagram.com/reel/..." maxlength="2000" required>
+              <button class="paste-btn" id="paste-btn" type="button">Colar</button>
+            </div>
+            <button class="primary-btn" id="submit-btn" type="submit">
+              <span class="btn-label">Consultar vídeo</span><span aria-hidden="true">→</span>
+            </button>
+          </form>
+          <p class="helper">Funciona com links de publicações públicas. Conteúdos privados ou removidos não podem ser acessados.</p>
+          <div id="status" class="status" role="status" aria-live="polite" hidden></div>
+          <section id="result" class="result" aria-live="polite" hidden>
+            <div class="result-title">Resultado da consulta</div>
+            <div id="preview" class="preview"></div>
+            <div id="download-area"></div>
+          </section>
+        </section>
+
+        <div class="trust-row">
+          <span>✓ Sem cadastro</span><span>✓ Não hospedamos vídeos</span><span>✓ Respeite os direitos autorais</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="how-section">
+      <div class="wrap">
+        <div class="section-title">
+          <span class="section-kicker">COMO USAR</span>
+          <h2>Três passos simples</h2>
+          <p>Consulte a publicação sem complicação.</p>
+        </div>
+        <div class="steps">
+          <article class="step"><div class="step-number">01</div><div class="step-icon">↗</div><h3>Copie o link</h3><p>No Instagram, abra a publicação e use a opção de copiar link.</p></article>
+          <article class="step"><div class="step-number">02</div><div class="step-icon">⌕</div><h3>Cole no VideoDown</h3><p>Insira o endereço no campo acima e clique em consultar.</p></article>
+          <article class="step"><div class="step-number">03</div><div class="step-icon">↓</div><h3>Veja as opções</h3><p>Quando uma integração autorizada fornecer o arquivo, o link para MP4 aparecerá aqui.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="notice-section">
+      <div class="wrap notice">
+        <span class="notice-icon">ⓘ</span>
+        <p><strong>Uso responsável:</strong> o VideoDown não contorna contas privadas, restrições de acesso ou proteções da plataforma. Baixe apenas conteúdos que você criou, tem autorização para guardar ou cujo uso seja permitido. A disponibilidade de prévia e download depende do Instagram e do provedor integrado.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner"><a class="brand" href="/"><span class="brand-mark">V</span>Video<span>Down</span></a><span>© <span id="year">2026</span> VideoDown. Ferramenta independente.</span></div>
+  </footer>
+</body>
+</html>
