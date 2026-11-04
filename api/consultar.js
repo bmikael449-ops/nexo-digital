@@ -13,51 +13,107 @@ export default async function handler(req, res) {
 
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
-    return res.status(405).json({ sucesso: false, erro: "Utilize POST." });
+    return res.status(405).json({
+      sucesso: false,
+      erro: "Utilize POST."
+    });
   }
 
   try {
     const { url } = req.body || {};
 
     if (typeof url !== "string" || url.length > 2000) {
-      return res.status(400).json({ sucesso: false, erro: "Cole um link válido." });
+      return res.status(400).json({
+        sucesso: false,
+        erro: "Cole um link válido."
+      });
     }
 
-    const parsed = new URL(url.trim());
+    let parsed;
+
+    try {
+      parsed = new URL(url.trim());
+    } catch {
+      return res.status(400).json({
+        sucesso: false,
+        erro: "O link informado não é válido."
+      });
+    }
 
     if (
       parsed.protocol !== "https:" ||
       !ALLOWED_HOSTS.has(parsed.hostname.toLowerCase())
     ) {
-      return res.status(400).json({ sucesso: false, erro: "Link inválido do Instagram." });
+      return res.status(400).json({
+        sucesso: false,
+        erro: "Link inválido do Instagram."
+      });
     }
 
-    const match = parsed.pathname.match(/^\/(reel|reels|p|tv)\/([a-zA-Z0-9_-]+)\/?$/);
+    const match = parsed.pathname.match(
+      /^\/(reel|reels|p|tv)\/([a-zA-Z0-9_-]+)\/?$/
+    );
 
     if (!match) {
-      return res.status(400).json({ sucesso: false, erro: "Formato de publicação não reconhecido." });
+      return res.status(400).json({
+        sucesso: false,
+        erro: "Formato de publicação não reconhecido."
+      });
     }
 
     const token = process.env.APIFY_TOKEN;
 
     if (!token) {
-      return res.status(500).json({ sucesso: false, erro: "Token do serviço não configurado." });
+      console.error("APIFY_TOKEN não configurado na Vercel.");
+
+      return res.status(500).json({
+        sucesso: false,
+        erro: "Serviço de download não configurado."
+      });
     }
 
-    const endpoint = `https://api.apify.com/v2/acts/${ACTOR_ID}/run-sync-get-dataset-items?token=${encodeURIComponent(token)}&format=json`;
+    const endpoint =
+      `https://api.apify.com/v2/acts/${ACTOR_ID}/run-sync-get-dataset-items` +
+      `?token=${encodeURIComponent(token)}&format=json`;
+
+    console.log("Iniciando processamento no Apify.");
 
     const response = await fetch(endpoint, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url: parsed.href }),
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        url: parsed.href
+      }),
       signal: AbortSignal.timeout(120000)
     });
 
+    const responseText = await response.text();
+
     if (!response.ok) {
-      return res.status(502).json({ sucesso: false, erro: "O Apify não conseguiu processar o vídeo." });
+      console.error("ERRO APIFY:", response.status, responseText);
+
+      return res.status(502).json({
+        sucesso: false,
+        erro: "O serviço de processamento retornou um erro.",
+        status: response.status
+      });
     }
 
-    const data = await response.json();
+    let data;
+
+    try {
+      data = JSON.parse(responseText);
+    } catch {
+      console.error("Resposta inválida do Apify:", responseText);
+
+      return res.status(502).json({
+        sucesso: false,
+        erro: "O Apify retornou uma resposta inválida."
+      });
+    }
+
     const items = Array.isArray(data) ? data : [data];
 
     const keys = [
@@ -66,6 +122,7 @@ export default async function handler(req, res) {
       "video_url",
       "mediaUrl",
       "media_url",
+      "video",
       "url"
     ];
 
@@ -75,25 +132,44 @@ export default async function handler(req, res) {
       for (const key of keys) {
         const value = item?.[key];
 
-        if (typeof value === "string") {
-          try {
-            const candidate = new URL(value);
-            if (candidate.protocol === "https:") {
-              downloadUrl = candidate.href;
-              break;
-            }
-          } catch {}
+        if (typeof value !== "string") continue;
+
+        try {
+          const candidate = new URL(value);
+
+          if (
+            candidate.protocol === "https:" &&
+            /\.(mp4|m3u8)(?:$|[?#])/i.test(candidate.pathname + candidate.search)
+          ) {
+            downloadUrl = candidate.href;
+            break;
+          }
+
+          if (candidate.protocol === "https:" && key !== "url") {
+            downloadUrl = candidate.href;
+            break;
+          }
+        } catch {
+          // Ignora valores que não sejam URLs.
         }
       }
+
       if (downloadUrl) break;
     }
 
     if (!downloadUrl) {
+      console.error(
+        "Apify executou, mas nenhum link reconhecido foi encontrado.",
+        JSON.stringify(items).slice(0, 4000)
+      );
+
       return res.status(502).json({
         sucesso: false,
         erro: "O Apify não retornou um link de vídeo reconhecido."
       });
     }
+
+    console.log("Link de vídeo encontrado com sucesso.");
 
     return res.status(200).json({
       sucesso: true,
@@ -102,9 +178,13 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
+    console.error("ERRO NA FUNÇÃO:", error?.name, error?.message);
+
     return res.status(500).json({
       sucesso: false,
-      erro: "Não foi possível processar o vídeo. Tente novamente."
+      erro: error?.name === "TimeoutError"
+        ? "O processamento demorou demais. Tente novamente."
+        : "Não foi possível processar o vídeo."
     });
   }
 }
