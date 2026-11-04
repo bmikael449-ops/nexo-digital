@@ -7,12 +7,70 @@ const ALLOWED_HOSTS = new Set([
 
 const ACTOR_ID = "qUM3Ovny6cGNYNnG0";
 
+function findVideoUrl(value, depth = 0) {
+  if (!value || depth > 6) return null;
+
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const found = findVideoUrl(item, depth + 1);
+      if (found) return found;
+    }
+    return null;
+  }
+
+  if (typeof value !== "object") return null;
+
+  const keys = [
+    "downloadUrl",
+    "videoUrl",
+    "video_url",
+    "mediaUrl",
+    "media_url",
+    "video",
+    "playUrl",
+    "play_url",
+    "url"
+  ];
+
+  for (const key of keys) {
+    const valueUrl = value[key];
+
+    if (typeof valueUrl !== "string") continue;
+
+    try {
+      const candidate = new URL(valueUrl);
+
+      if (
+        candidate.protocol === "https:" &&
+        !ALLOWED_HOSTS.has(candidate.hostname.toLowerCase())
+      ) {
+        return candidate.href;
+      }
+    } catch {
+      // Ignora URLs inválidas.
+    }
+  }
+
+  for (const [key, nested] of Object.entries(value)) {
+    if (
+      typeof nested === "object" &&
+      nested !== null
+    ) {
+      const found = findVideoUrl(nested, depth + 1);
+      if (found) return found;
+    }
+  }
+
+  return null;
+}
+
 export default async function handler(req, res) {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
 
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
+
     return res.status(405).json({
       sucesso: false,
       erro: "Utilize POST."
@@ -68,7 +126,7 @@ export default async function handler(req, res) {
 
       return res.status(500).json({
         sucesso: false,
-        erro: "Serviço de download não configurado."
+        erro: "Serviço de processamento não configurado."
       });
     }
 
@@ -84,7 +142,8 @@ export default async function handler(req, res) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        postUrls: [parsed.href]
+        postUrls: [parsed.href],
+        saveFiles: false
       }),
       signal: AbortSignal.timeout(120000)
     });
@@ -95,7 +154,7 @@ export default async function handler(req, res) {
       console.error(
         "ERRO APIFY:",
         response.status,
-        responseText
+        responseText.slice(0, 2000)
       );
 
       return res.status(502).json({
@@ -110,8 +169,6 @@ export default async function handler(req, res) {
     try {
       data = JSON.parse(responseText);
     } catch {
-      console.error("Resposta inválida do Apify.");
-
       return res.status(502).json({
         sucesso: false,
         erro: "O Apify retornou uma resposta inválida."
@@ -120,51 +177,28 @@ export default async function handler(req, res) {
 
     const items = Array.isArray(data) ? data : [data];
 
-    const keys = [
-      "downloadUrl",
-      "videoUrl",
-      "video_url",
-      "mediaUrl",
-      "media_url",
-      "video",
-      "url"
-    ];
+    const videoItem = items.find(item =>
+      String(item?.mediaType || "").toLowerCase() === "video"
+    );
 
-    let downloadUrl = null;
+    const downloadUrl = findVideoUrl(
+      videoItem || items
+    );
 
-    for (const item of items) {
-      for (const key of keys) {
-        const value = item?.[key];
-
-        if (typeof value !== "string") continue;
-
-        try {
-          const candidate = new URL(value);
-
-          if (
-            candidate.protocol === "https:" &&
-            !ALLOWED_HOSTS.has(candidate.hostname.toLowerCase())
-          ) {
-            downloadUrl = candidate.href;
-            break;
-          }
-        } catch {
-          // Ignora valores que não sejam URLs.
-        }
-      }
-
-      if (downloadUrl) break;
-    }
+    const embedUrl =
+      `https://www.instagram.com/${match[1]}/${match[2]}/embed/`;
 
     if (!downloadUrl) {
-      console.error(
-        "Nenhum link de vídeo reconhecido.",
-        JSON.stringify(items).slice(0, 4000)
+      console.log(
+        "Publicação encontrada, mas sem URL de vídeo reconhecida."
       );
 
-      return res.status(502).json({
-        sucesso: false,
-        erro: "O Apify não retornou um link de vídeo reconhecido."
+      return res.status(200).json({
+        sucesso: true,
+        embed: embedUrl,
+        downloadDisponivel: false,
+        mensagem:
+          "Publicação encontrada, mas o provedor não retornou um endereço de vídeo disponível."
       });
     }
 
@@ -172,6 +206,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       sucesso: true,
+      embed: embedUrl,
       downloadDisponivel: true,
       downloadUrl
     });
@@ -185,9 +220,10 @@ export default async function handler(req, res) {
 
     return res.status(500).json({
       sucesso: false,
-      erro: error?.name === "TimeoutError"
-        ? "O processamento demorou demais. Tente novamente."
-        : "Não foi possível processar o vídeo."
+      erro:
+        error?.name === "TimeoutError"
+          ? "O processamento demorou demais. Tente novamente."
+          : "Não foi possível processar o vídeo."
     });
   }
 }
