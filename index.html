@@ -1,13 +1,17 @@
 
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="VideoDown - consulte vídeos do Instagram.">
-<title>VideoDown - Baixar vídeos</title>
+
+<title>VideoDown - Instagram Downloader</title>
+
+<meta name="description" content="Consulte Reels e vídeos do Instagram com VideoDown.">
 
 <style>
+
 * {
   margin: 0;
   padding: 0;
@@ -37,14 +41,14 @@ header {
 }
 
 .hero {
-  background: linear-gradient(135deg,#111,#343434);
+  background: linear-gradient(135deg,#111,#333);
   color: white;
   text-align: center;
-  padding: 65px 20px;
+  padding: 65px 15px;
 }
 
 .hero h1 {
-  font-size: clamp(27px,5vw,42px);
+  font-size: clamp(28px,5vw,42px);
   margin-bottom: 15px;
 }
 
@@ -54,7 +58,7 @@ header {
 }
 
 .container {
-  max-width: 700px;
+  max-width: 720px;
   width: 92%;
   margin: -30px auto 40px;
   position: relative;
@@ -83,11 +87,6 @@ input {
   border: 1px solid #ddd;
   border-radius: 8px;
   font-size: 15px;
-  outline: none;
-}
-
-input:focus {
-  border-color: #ed2525;
 }
 
 button {
@@ -96,15 +95,11 @@ button {
   margin-top: 12px;
   background: #ed2525;
   color: white;
-  border: none;
+  border: 0;
   border-radius: 8px;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-}
-
-button:hover {
-  background: #c91c1c;
 }
 
 button:disabled {
@@ -119,32 +114,19 @@ button:disabled {
 
 iframe {
   width: 100%;
-  height: 450px;
-  border: none;
+  height: 470px;
+  border: 0;
   border-radius: 10px;
 }
 
 .aviso {
   background: #fff4dc;
+  color: #75511b;
   padding: 15px;
   border-radius: 8px;
-  color: #75511b;
-  font-size: 14px;
+  margin-top: 15px;
   line-height: 1.6;
-  margin-top: 15px;
-}
-
-.download {
-  display: block;
-  width: 100%;
-  padding: 17px;
-  background: #15803d;
-  color: white;
-  text-align: center;
-  text-decoration: none;
-  border-radius: 8px;
-  font-weight: bold;
-  margin-top: 15px;
+  font-size: 14px;
 }
 
 .ads {
@@ -152,11 +134,10 @@ iframe {
   border: 1px dashed #bbb;
   min-height: 100px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  color: #999;
-  text-align: center;
+  align-items: center;
   margin: 25px 0;
+  color: #999;
   font-size: 13px;
 }
 
@@ -164,15 +145,14 @@ iframe {
   background: white;
   padding: 25px;
   border-radius: 12px;
-  margin-top: 25px;
 }
 
 .steps h2 {
   margin-bottom: 15px;
 }
 
-.step {
-  padding: 13px 0;
+.steps div {
+  padding: 14px 0;
   border-bottom: 1px solid #eee;
 }
 
@@ -186,6 +166,7 @@ footer {
 }
 
 @media(max-width:600px) {
+
   .hero {
     padding: 55px 15px;
   }
@@ -195,21 +176,30 @@ footer {
   }
 
   iframe {
-    height: 350px;
+    height: 400px;
   }
+
 }
+
 </style>
 </head>
 
 <body>
 
 <header>
-  <div class="logo">Video<span>Down</span></div>
+  <div class="logo">
+    Video<span>Down</span>
+  </div>
 </header>
 
 <section class="hero">
-  <h1>Baixe seus vídeos facilmente!</h1>
-  <p>Cole o link do Instagram e consulte sua publicação.</p>
+
+  <h1>Instagram Video Downloader</h1>
+
+  <p>
+    Consulte Reels e vídeos do Instagram facilmente.
+  </p>
+
 </section>
 
 <main class="container">
@@ -218,41 +208,44 @@ footer {
 
     <h2>Baixar vídeo do Instagram</h2>
 
-    <p>Insira o link do Reel ou vídeo abaixo.</p>
+    <p>
+      Cole o link do vídeo ou Reel abaixo.
+    </p>
 
     <input
       type="url"
-      id="instagramUrl"
-      placeholder="Cole o link aqui..."
-      aria-label="Link do Instagram"
+      id="url"
+      placeholder="Cole o link do Instagram aqui..."
     >
 
-    <button id="consultar" onclick="consultarInstagram()">
+    <button id="btn" onclick="consultar()">
       BAIXAR VÍDEO
     </button>
 
     <div id="resultado">
-      <h3>Resultado</h3>
 
       <div id="preview"></div>
 
       <div id="mensagem"></div>
 
-      <div id="download"></div>
     </div>
 
   </section>
 
   <div class="ads">
-    ESPAÇO PARA ANÚNCIOS
+    ESPAÇO PARA GOOGLE ADSENSE
   </div>
 
   <section class="steps">
+
     <h2>Como funciona?</h2>
 
-    <div class="step">🔗 1. Copie o link do Instagram.</div>
-    <div class="step">📋 2. Cole no VideoDown.</div>
-    <div class="step">📥 3. Consulte e baixe quando disponível.</div>
+    <div>🔗 1. Copie o link do Instagram.</div>
+
+    <div>📋 2. Cole no VideoDown.</div>
+
+    <div>📥 3. Consulte a publicação.</div>
+
   </section>
 
   <div class="ads">
@@ -262,126 +255,116 @@ footer {
 </main>
 
 <footer>
+
   <strong>VideoDown</strong><br>
-  Consulte e encontre seus vídeos.<br>
-  Respeitamos a privacidade e os direitos autorais.<br>
+
+  Instagram Video Downloader<br>
+
   © 2026 VideoDown
+
 </footer>
 
 <script>
 
-// Arquivos disponibilizados para download.
-// Cadastre os arquivos que podem ser distribuídos.
+async function consultar() {
 
-const DOWNLOADS = {
-
-  // "CODIGO_DO_REEL": "https://seudominio.com/video.mp4"
-
-};
-
-function extrairCodigo(url) {
-  try {
-    const endereco = new URL(url);
-
-    if (
-      endereco.hostname !== "instagram.com" &&
-      endereco.hostname !== "www.instagram.com"
-    ) {
-      return null;
-    }
-
-    const partes = endereco.pathname
-      .split("/")
-      .filter(Boolean);
-
-    if (
-      ["reel", "reels", "p", "tv"].includes(partes[0]) &&
-      partes[1] &&
-      /^[a-zA-Z0-9_-]+$/.test(partes[1])
-    ) {
-      return partes[1];
-    }
-
-    return null;
-
-  } catch {
-    return null;
-  }
-}
-
-function consultarInstagram() {
-
-  const url = document
-    .getElementById("instagramUrl")
-    .value.trim();
+  const url = document.getElementById("url").value.trim();
 
   const resultado = document.getElementById("resultado");
+
   const preview = document.getElementById("preview");
+
   const mensagem = document.getElementById("mensagem");
-  const download = document.getElementById("download");
-  const botao = document.getElementById("consultar");
+
+  const btn = document.getElementById("btn");
 
   resultado.style.display = "block";
+
   preview.innerHTML = "";
+
   mensagem.innerHTML = "";
-  download.innerHTML = "";
 
-  const codigo = extrairCodigo(url);
+  if (!url) {
 
-  if (!codigo) {
     mensagem.innerHTML =
-      '<div class="aviso">Link inválido. Cole um link válido do Instagram.</div>';
+      '<div class="aviso">Cole um link do Instagram.</div>';
+
     return;
-  }
-
-  botao.disabled = true;
-  botao.textContent = "CONSULTANDO...";
-
-  const iframe = document.createElement("iframe");
-
-  iframe.src =
-    "https://www.instagram.com/p/" +
-    encodeURIComponent(codigo) +
-    "/embed/";
-
-  iframe.title = "Vídeo do Instagram";
-  iframe.loading = "lazy";
-
-  preview.appendChild(iframe);
-
-  if (DOWNLOADS[codigo]) {
-
-    mensagem.innerHTML =
-      '<div class="aviso">Vídeo disponível para download!</div>';
-
-    const link = document.createElement("a");
-
-    link.href = DOWNLOADS[codigo];
-    link.className = "download";
-    link.textContent = "⬇ BAIXAR VÍDEO";
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-
-    download.appendChild(link);
-
-  } else {
-
-    mensagem.innerHTML =
-      '<div class="aviso">A publicação foi localizada, mas o arquivo ainda não está disponível para download. A pré-visualização pode depender das configurações de incorporação do Instagram.</div>';
 
   }
 
-  botao.disabled = false;
-  botao.textContent = "BAIXAR VÍDEO";
+  btn.disabled = true;
+
+  btn.textContent = "CONSULTANDO...";
+
+  try {
+
+    const resposta = await fetch("/api/consultar", {
+
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify({ url })
+
+    });
+
+    const dados = await resposta.json();
+
+    if (!resposta.ok) {
+
+      throw new Error(dados.erro);
+
+    }
+
+    const iframe = document.createElement("iframe");
+
+    iframe.src = dados.embed;
+
+    iframe.title = "Prévia do Instagram";
+
+    iframe.loading = "lazy";
+
+    preview.appendChild(iframe);
+
+    mensagem.innerHTML =
+      '<div class="aviso">Publicação identificada! A pré-visualização depende das configurações do Instagram. O download automático ainda requer uma integração de arquivos compatível.</div>';
+
+  } catch (erro) {
+
+    mensagem.innerHTML =
+      '<div class="aviso">' + escapar(erro.message) + '</div>';
+
+  } finally {
+
+    btn.disabled = false;
+
+    btn.textContent = "BAIXAR VÍDEO";
+
+  }
 
   resultado.scrollIntoView({
     behavior: "smooth",
     block: "nearest"
   });
+
+}
+
+function escapar(texto) {
+
+  const div = document.createElement("div");
+
+  div.textContent = texto;
+
+  return div.innerHTML;
+
 }
 
 </script>
 
 </body>
 </html>
+
 
