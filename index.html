@@ -4,8 +4,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="VideoDown - consulte vídeos e baixe conteúdos autorizados.">
-<title>VideoDown - Baixe seus vídeos</title>
+
+<title>VideoDown - Instagram Downloader</title>
+<meta name="description" content="VideoDown: consulte vídeos e baixe conteúdos autorizados do Instagram.">
 
 <style>
 * {
@@ -23,15 +24,13 @@ body {
 header {
   background: #111;
   padding: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  text-align: center;
 }
 
 .logo {
-  color: white;
   font-size: 30px;
   font-weight: bold;
+  color: white;
 }
 
 .logo span {
@@ -39,14 +38,14 @@ header {
 }
 
 .hero {
-  background: linear-gradient(135deg, #111, #333);
+  background: linear-gradient(135deg,#111,#343434);
   color: white;
   text-align: center;
   padding: 65px 20px;
 }
 
 .hero h1 {
-  font-size: clamp(28px, 5vw, 42px);
+  font-size: clamp(27px,5vw,42px);
   margin-bottom: 15px;
 }
 
@@ -75,8 +74,8 @@ header {
 
 .card p {
   color: #777;
-  line-height: 1.5;
-  margin-bottom: 20px;
+  line-height: 1.6;
+  margin-bottom: 18px;
 }
 
 input {
@@ -116,10 +115,9 @@ button:hover {
 
 iframe {
   width: 100%;
-  aspect-ratio: 16/9;
+  min-height: 450px;
   border: none;
   border-radius: 10px;
-  margin-bottom: 15px;
 }
 
 .aviso {
@@ -129,7 +127,7 @@ iframe {
   color: #75511b;
   font-size: 14px;
   line-height: 1.6;
-  margin-top: 12px;
+  margin-top: 15px;
 }
 
 .download {
@@ -172,7 +170,6 @@ iframe {
 .step {
   padding: 13px 0;
   border-bottom: 1px solid #eee;
-  line-height: 1.5;
 }
 
 footer {
@@ -192,6 +189,10 @@ footer {
   .card {
     padding: 22px 17px;
   }
+
+  iframe {
+    min-height: 350px;
+  }
 }
 </style>
 </head>
@@ -203,40 +204,43 @@ footer {
 </header>
 
 <section class="hero">
-  <h1>Baixe seus vídeos facilmente!</h1>
-  <p>Cole o link, consulte o vídeo e encontre os downloads autorizados.</p>
+  <h1>Instagram Video Downloader</h1>
+  <p>Consulte Reels e vídeos e encontre downloads autorizados.</p>
 </section>
 
 <main class="container">
 
   <section class="card">
-    <h2>Consultar vídeo</h2>
-    <p>Insira abaixo o link do vídeo que deseja consultar.</p>
+
+    <h2>Baixar vídeo do Instagram</h2>
+
+    <p>
+      Cole abaixo o link de um Reel ou vídeo do Instagram.
+    </p>
 
     <input
       type="url"
-      id="videoUrl"
-      placeholder="Cole o link do YouTube aqui..."
-      aria-label="Link do vídeo"
+      id="instagramUrl"
+      placeholder="https://www.instagram.com/reel/..."
+      aria-label="Link do Instagram"
     >
 
-    <button onclick="consultarVideo()">
+    <button onclick="consultarInstagram()">
       CONSULTAR VÍDEO
     </button>
 
     <div id="resultado">
-      <h3>Vídeo encontrado</h3>
 
-      <iframe
-        id="player"
-        title="Pré-visualização do vídeo"
-        allowfullscreen
-        referrerpolicy="strict-origin-when-cross-origin">
-      </iframe>
+      <h3>Vídeo consultado</h3>
+
+      <div id="preview"></div>
 
       <div id="mensagem"></div>
+
       <div id="download"></div>
+
     </div>
+
   </section>
 
   <div class="ads">
@@ -244,19 +248,21 @@ footer {
   </div>
 
   <section class="steps">
+
     <h2>Como funciona?</h2>
 
     <div class="step">
-      🔗 <strong>1.</strong> Cole o link do vídeo.
+      🔗 1. Copie o link do Instagram.
     </div>
 
     <div class="step">
-      🔍 <strong>2.</strong> Consulte o conteúdo.
+      📋 2. Cole o link no VideoDown.
     </div>
 
     <div class="step">
-      📥 <strong>3.</strong> Baixe o arquivo autorizado, quando disponível.
+      📥 3. Consulte e baixe o arquivo autorizado, quando disponível.
     </div>
+
   </section>
 
   <div class="ads">
@@ -268,96 +274,109 @@ footer {
 <footer>
   <strong>VideoDown</strong><br>
   Plataforma de consulta e downloads autorizados.<br>
-  Respeitamos os direitos autorais.<br>
+  Respeitamos a privacidade e os direitos autorais.<br>
   © 2026 VideoDown - Todos os direitos reservados.
 </footer>
 
 <script>
 
-// CADASTRO DE DOWNLOADS AUTORIZADOS.
+// LINKS DE ARQUIVOS AUTORIZADOS.
 //
-// Adicione aqui os IDs dos vídeos e os links
-// diretos dos arquivos que você tem autorização
-// para distribuir.
+// Cadastre os arquivos de vídeo que você
+// possui autorização para distribuir.
+//
+// A chave é o código do Reel ou publicação.
 
 const DOWNLOADS = {
 
-  // Exemplo:
-  // "ID_DO_VIDEO": "https://seudominio.com/video.mp4"
+  // EXEMPLO:
+  // "CODIGO_DO_REEL": "https://seudominio.com/video.mp4"
 
 };
 
-function extrairId(url) {
-  try {
-    const endereco = new URL(url);
-    let id = null;
+function extrairCodigo(url) {
 
-    if (endereco.hostname === "youtu.be") {
-      id = endereco.pathname.slice(1);
-    }
+  try {
+
+    const endereco = new URL(url);
 
     if (
-      endereco.hostname === "youtube.com" ||
-      endereco.hostname.endsWith(".youtube.com")
+      endereco.hostname !== "instagram.com" &&
+      endereco.hostname !== "www.instagram.com"
     ) {
-      if (endereco.pathname === "/watch") {
-        id = endereco.searchParams.get("v");
-      } else {
-        const partes = endereco.pathname.split("/");
-
-        if (
-          ["shorts", "embed", "live"].includes(partes[1])
-        ) {
-          id = partes[2];
-        }
-      }
+      return null;
     }
 
-    return /^[a-zA-Z0-9_-]{11}$/.test(id || "")
-      ? id
-      : null;
+    const partes = endereco.pathname.split("/").filter(Boolean);
+
+    if (
+      ["reel", "reels", "p", "tv"].includes(partes[0]) &&
+      partes[1] &&
+      /^[a-zA-Z0-9_-]+$/.test(partes[1])
+    ) {
+      return partes[1];
+    }
+
+    return null;
 
   } catch {
     return null;
   }
+
 }
 
-function consultarVideo() {
+function consultarInstagram() {
 
-  const url = document.getElementById("videoUrl").value.trim();
+  const url = document
+    .getElementById("instagramUrl")
+    .value.trim();
 
   const resultado = document.getElementById("resultado");
-  const player = document.getElementById("player");
+  const preview = document.getElementById("preview");
   const mensagem = document.getElementById("mensagem");
   const download = document.getElementById("download");
 
   resultado.style.display = "block";
-  player.src = "";
+
+  preview.innerHTML = "";
   mensagem.innerHTML = "";
   download.innerHTML = "";
 
-  const id = extrairId(url);
+  const codigo = extrairCodigo(url);
 
-  if (!id) {
+  if (!codigo) {
+
     mensagem.innerHTML =
-      '<div class="aviso">Link inválido. Confira o endereço e tente novamente.</div>';
+      '<div class="aviso">Link inválido. Cole um endereço válido de Reel ou publicação do Instagram.</div>';
+
     return;
+
   }
 
-  player.src =
-    "https://www.youtube-nocookie.com/embed/" +
-    encodeURIComponent(id);
+  // Pré-visualização oficial do Instagram.
+  const iframe = document.createElement("iframe");
 
-  if (DOWNLOADS[id]) {
+  iframe.src =
+    "https://www.instagram.com/p/" +
+    encodeURIComponent(codigo) +
+    "/embed/";
+
+  iframe.title = "Pré-visualização do Instagram";
+  iframe.loading = "lazy";
+
+  preview.appendChild(iframe);
+
+  if (DOWNLOADS[codigo]) {
 
     mensagem.innerHTML =
-      '<div class="aviso">Encontramos um arquivo autorizado para download!</div>';
+      '<div class="aviso">Arquivo autorizado encontrado!</div>';
 
     const link = document.createElement("a");
 
-    link.href = DOWNLOADS[id];
+    link.href = DOWNLOADS[codigo];
     link.className = "download";
     link.textContent = "⬇ BAIXAR VÍDEO";
+
     link.target = "_blank";
     link.rel = "noopener noreferrer";
 
@@ -366,7 +385,7 @@ function consultarVideo() {
   } else {
 
     mensagem.innerHTML =
-      '<div class="aviso">O vídeo foi encontrado, mas ainda não existe um arquivo autorizado disponível para download.</div>';
+      '<div class="aviso">A publicação foi identificada, mas ainda não existe um arquivo autorizado cadastrado para download.</div>';
 
   }
 
@@ -374,6 +393,7 @@ function consultarVideo() {
     behavior: "smooth",
     block: "nearest"
   });
+
 }
 
 </script>
