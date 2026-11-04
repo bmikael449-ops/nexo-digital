@@ -1,111 +1,71 @@
-// WhatsApp comercial: código do país + DDD + número.
-const WHATSAPP = "5585997674228";
 
-const servicos = [
-  {
-    nome: "Landing Pages",
-    icone: "🚀",
-    descricao:
-      "Páginas estratégicas para apresentar ofertas, divulgar serviços e gerar contatos."
-  },
-  {
-    nome: "Sites Empresariais",
-    icone: "💻",
-    descricao:
-      "Apresente sua empresa com um site profissional, moderno e adaptado para celulares."
-  },
-  {
-    nome: "Lojas Virtuais",
-    icone: "🛍️",
-    descricao:
-      "Tenha sua loja online e apresente seus produtos para clientes pela internet."
-  },
-  {
-    nome: "Manutenção de Sites",
-    icone: "⚙️",
-    descricao:
-      "Conte com ajuda para atualizações, correções e melhorias no seu site."
+export default async function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
   }
-];
 
-const lista = document.getElementById("lista-servicos");
-
-servicos.forEach((servico) => {
-  const card = document.createElement("article");
-  card.className = "service-card";
-
-  const icone = document.createElement("div");
-  icone.className = "service-icon";
-  icone.setAttribute("aria-hidden", "true");
-  icone.textContent = servico.icone;
-
-  const titulo = document.createElement("h3");
-  titulo.textContent = servico.nome;
-
-  const descricao = document.createElement("p");
-  descricao.textContent = servico.descricao;
-
-  const botao = document.createElement("button");
-  botao.type = "button";
-  botao.className = "btn";
-  botao.textContent = "Solicitar orçamento ↗";
-
-  botao.addEventListener("click", () => {
-    document.getElementById("tipo").value =
-      servico.nome === "Landing Pages" ? "Landing page" :
-      servico.nome === "Sites Empresariais" ? "Site empresarial" :
-      servico.nome === "Lojas Virtuais" ? "Loja virtual" :
-      "Manutenção de site";
-
-    document.getElementById("orcamento").scrollIntoView({
-      behavior: "smooth"
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      erro: "Método não permitido."
     });
+  }
 
-    document.getElementById("nome").focus({
-      preventScroll: true
+  const url = req.body?.url;
+
+  if (typeof url !== "string" || url.length > 2000) {
+    return res.status(400).json({
+      erro: "Informe um link válido."
     });
-  });
+  }
 
-  card.append(icone, titulo, descricao, botao);
-  lista.appendChild(card);
-});
+  try {
+    const parsed = new URL(url);
 
-document.getElementById("form-orcamento")
-  .addEventListener("submit", (event) => {
-    event.preventDefault();
-
-    const nome = document.getElementById("nome").value.trim();
-    const empresa = document.getElementById("empresa").value.trim();
-    const tipo = document.getElementById("tipo").value;
-    const descricao = document.getElementById("descricao").value.trim();
-    const prazo = document.getElementById("prazo").value;
-    const investimento =
-      document.getElementById("orcamento-valor").value;
-
-    if (!nome || !tipo || !descricao) {
-      alert("Preencha seu nome, o serviço e a descrição do projeto.");
-      return;
+    if (
+      !["instagram.com", "www.instagram.com"].includes(
+        parsed.hostname
+      )
+    ) {
+      return res.status(400).json({
+        erro: "Este link não pertence ao Instagram."
+      });
     }
 
-    const mensagem = [
-      "Olá, Nexo Digital! Gostaria de solicitar um orçamento.",
-      "",
-      "*Nome:* " + nome,
-      empresa ? "*Empresa:* " + empresa : "",
-      "*Serviço:* " + tipo,
-      "*Descrição do projeto:* " + descricao,
-      prazo ? "*Prazo desejado:* " + prazo : "",
-      investimento ? "*Investimento previsto:* " + investimento : "",
-      "",
-      "Aguardo o retorno. Obrigado!"
-    ].filter(Boolean).join("\n");
+    const partes = parsed.pathname.split("/").filter(Boolean);
 
-    const url =
-      "https://wa.me/" + WHATSAPP +
-      "?text=" + encodeURIComponent(mensagem);
+    if (
+      !["reel", "reels", "p", "tv"].includes(partes[0]) ||
+      !partes[1] ||
+      !/^[a-zA-Z0-9_-]+$/.test(partes[1])
+    ) {
+      return res.status(400).json({
+        erro: "Link de publicação inválido."
+      });
+    }
 
-    window.open(url, "_blank", "noopener,noreferrer");
-  });
+    const codigo = partes[1];
 
-document.getElementById("ano").textContent =
-  new Date().getFullYear();
+    const tipo = partes[0];
+
+    const embed =
+      `https://www.instagram.com/${tipo}/${encodeURIComponent(codigo)}/embed/`;
+
+    return res.status(200).json({
+      sucesso: true,
+      codigo,
+      tipo,
+      embed,
+      downloadDisponivel: false,
+      mensagem: "Publicação identificada."
+    });
+
+  } catch (error) {
+    return res.status(400).json({
+      erro: "Não foi possível validar o link."
+    });
+  }
+}
