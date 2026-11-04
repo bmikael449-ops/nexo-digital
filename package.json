@@ -1,12 +1,12 @@
 
 {
   "name": "videodown",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "private": true,
   "description": "VideoDown - Instagram Downloader",
   "scripts": {
-    "dev": "vercel dev"
+    "dev": "vercel dev",
+    "start": "node server.js"
   },
   "dependencies": {}
 }
-
