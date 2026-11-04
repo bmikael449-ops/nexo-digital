@@ -4,9 +4,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>VideoDown - Instagram Downloader</title>
-<meta name="description" content="VideoDown: consulte vídeos e baixe conteúdos autorizados do Instagram.">
+<meta name="description" content="VideoDown - consulte vídeos do Instagram.">
+<title>VideoDown - Baixar vídeos</title>
 
 <style>
 * {
@@ -108,6 +107,11 @@ button:hover {
   background: #c91c1c;
 }
 
+button:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
 #resultado {
   display: none;
   margin-top: 25px;
@@ -115,7 +119,7 @@ button:hover {
 
 iframe {
   width: 100%;
-  min-height: 450px;
+  height: 450px;
   border: none;
   border-radius: 10px;
 }
@@ -191,7 +195,7 @@ footer {
   }
 
   iframe {
-    min-height: 350px;
+    height: 350px;
   }
 }
 </style>
@@ -204,8 +208,8 @@ footer {
 </header>
 
 <section class="hero">
-  <h1>Instagram Video Downloader</h1>
-  <p>Consulte Reels e vídeos e encontre downloads autorizados.</p>
+  <h1>Baixe seus vídeos facilmente!</h1>
+  <p>Cole o link do Instagram e consulte sua publicação.</p>
 </section>
 
 <main class="container">
@@ -214,90 +218,69 @@ footer {
 
     <h2>Baixar vídeo do Instagram</h2>
 
-    <p>
-      Cole abaixo o link de um Reel ou vídeo do Instagram.
-    </p>
+    <p>Insira o link do Reel ou vídeo abaixo.</p>
 
     <input
       type="url"
       id="instagramUrl"
-      placeholder="https://www.instagram.com/reel/..."
+      placeholder="Cole o link aqui..."
       aria-label="Link do Instagram"
     >
 
-    <button onclick="consultarInstagram()">
-      CONSULTAR VÍDEO
+    <button id="consultar" onclick="consultarInstagram()">
+      BAIXAR VÍDEO
     </button>
 
     <div id="resultado">
-
-      <h3>Vídeo consultado</h3>
+      <h3>Resultado</h3>
 
       <div id="preview"></div>
 
       <div id="mensagem"></div>
 
       <div id="download"></div>
-
     </div>
 
   </section>
 
   <div class="ads">
-    ESPAÇO RESERVADO PARA ANÚNCIOS
+    ESPAÇO PARA ANÚNCIOS
   </div>
 
   <section class="steps">
-
     <h2>Como funciona?</h2>
 
-    <div class="step">
-      🔗 1. Copie o link do Instagram.
-    </div>
-
-    <div class="step">
-      📋 2. Cole o link no VideoDown.
-    </div>
-
-    <div class="step">
-      📥 3. Consulte e baixe o arquivo autorizado, quando disponível.
-    </div>
-
+    <div class="step">🔗 1. Copie o link do Instagram.</div>
+    <div class="step">📋 2. Cole no VideoDown.</div>
+    <div class="step">📥 3. Consulte e baixe quando disponível.</div>
   </section>
 
   <div class="ads">
-    ESPAÇO PARA OUTRO ANÚNCIO
+    ESPAÇO PARA PUBLICIDADE
   </div>
 
 </main>
 
 <footer>
   <strong>VideoDown</strong><br>
-  Plataforma de consulta e downloads autorizados.<br>
+  Consulte e encontre seus vídeos.<br>
   Respeitamos a privacidade e os direitos autorais.<br>
-  © 2026 VideoDown - Todos os direitos reservados.
+  © 2026 VideoDown
 </footer>
 
 <script>
 
-// LINKS DE ARQUIVOS AUTORIZADOS.
-//
-// Cadastre os arquivos de vídeo que você
-// possui autorização para distribuir.
-//
-// A chave é o código do Reel ou publicação.
+// Arquivos disponibilizados para download.
+// Cadastre os arquivos que podem ser distribuídos.
 
 const DOWNLOADS = {
 
-  // EXEMPLO:
   // "CODIGO_DO_REEL": "https://seudominio.com/video.mp4"
 
 };
 
 function extrairCodigo(url) {
-
   try {
-
     const endereco = new URL(url);
 
     if (
@@ -307,7 +290,9 @@ function extrairCodigo(url) {
       return null;
     }
 
-    const partes = endereco.pathname.split("/").filter(Boolean);
+    const partes = endereco.pathname
+      .split("/")
+      .filter(Boolean);
 
     if (
       ["reel", "reels", "p", "tv"].includes(partes[0]) &&
@@ -322,7 +307,6 @@ function extrairCodigo(url) {
   } catch {
     return null;
   }
-
 }
 
 function consultarInstagram() {
@@ -335,9 +319,9 @@ function consultarInstagram() {
   const preview = document.getElementById("preview");
   const mensagem = document.getElementById("mensagem");
   const download = document.getElementById("download");
+  const botao = document.getElementById("consultar");
 
   resultado.style.display = "block";
-
   preview.innerHTML = "";
   mensagem.innerHTML = "";
   download.innerHTML = "";
@@ -345,15 +329,14 @@ function consultarInstagram() {
   const codigo = extrairCodigo(url);
 
   if (!codigo) {
-
     mensagem.innerHTML =
-      '<div class="aviso">Link inválido. Cole um endereço válido de Reel ou publicação do Instagram.</div>';
-
+      '<div class="aviso">Link inválido. Cole um link válido do Instagram.</div>';
     return;
-
   }
 
-  // Pré-visualização oficial do Instagram.
+  botao.disabled = true;
+  botao.textContent = "CONSULTANDO...";
+
   const iframe = document.createElement("iframe");
 
   iframe.src =
@@ -361,7 +344,7 @@ function consultarInstagram() {
     encodeURIComponent(codigo) +
     "/embed/";
 
-  iframe.title = "Pré-visualização do Instagram";
+  iframe.title = "Vídeo do Instagram";
   iframe.loading = "lazy";
 
   preview.appendChild(iframe);
@@ -369,14 +352,13 @@ function consultarInstagram() {
   if (DOWNLOADS[codigo]) {
 
     mensagem.innerHTML =
-      '<div class="aviso">Arquivo autorizado encontrado!</div>';
+      '<div class="aviso">Vídeo disponível para download!</div>';
 
     const link = document.createElement("a");
 
     link.href = DOWNLOADS[codigo];
     link.className = "download";
     link.textContent = "⬇ BAIXAR VÍDEO";
-
     link.target = "_blank";
     link.rel = "noopener noreferrer";
 
@@ -385,18 +367,21 @@ function consultarInstagram() {
   } else {
 
     mensagem.innerHTML =
-      '<div class="aviso">A publicação foi identificada, mas ainda não existe um arquivo autorizado cadastrado para download.</div>';
+      '<div class="aviso">A publicação foi localizada, mas o arquivo ainda não está disponível para download. A pré-visualização pode depender das configurações de incorporação do Instagram.</div>';
 
   }
+
+  botao.disabled = false;
+  botao.textContent = "BAIXAR VÍDEO";
 
   resultado.scrollIntoView({
     behavior: "smooth",
     block: "nearest"
   });
-
 }
 
 </script>
 
 </body>
 </html>
+
