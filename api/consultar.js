@@ -1,23 +1,19 @@
 
-export default function handler(req, res) {
-  res.setHeader(
-    "Content-Type",
-    "application/json; charset=utf-8"
-  );
-
+export default async function handler(req, res) {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
 
   if (req.method !== "POST") {
     return res.status(405).json({
       sucesso: false,
-      erro: "Método não permitido. Utilize POST."
+      erro: "Utilize POST."
     });
   }
 
   try {
-    const url = req.body?.url;
+    const { url } = req.body || {};
 
-    if (typeof url !== "string" || !url.trim()) {
+    if (!url || typeof url !== "string") {
       return res.status(400).json({
         sucesso: false,
         erro: "Cole um link do Instagram."
@@ -26,42 +22,42 @@ export default function handler(req, res) {
 
     const parsed = new URL(url.trim());
 
-    if (
-      !["instagram.com", "www.instagram.com"].includes(
-        parsed.hostname
-      )
-    ) {
+    if (![
+      "instagram.com",
+      "www.instagram.com",
+      "m.instagram.com"
+    ].includes(parsed.hostname)) {
       return res.status(400).json({
         sucesso: false,
-        erro: "Link inválido do Instagram."
+        erro: "O endereço não pertence ao Instagram."
       });
     }
 
-    const partes = parsed.pathname.split("/").filter(Boolean);
+    const match = parsed.pathname.match(
+      /^\/(reel|reels|p|tv)\/([a-zA-Z0-9_-]+)\/?$/
+    );
 
-    if (
-      !["reel", "reels", "p", "tv"].includes(partes[0]) ||
-      !partes[1] ||
-      !/^[a-zA-Z0-9_-]+$/.test(partes[1])
-    ) {
+    if (!match) {
       return res.status(400).json({
         sucesso: false,
-        erro: "Publicação inválida."
+        erro: "Formato de publicação inválido."
       });
     }
 
     return res.status(200).json({
       sucesso: true,
-      codigo: partes[1],
-      embed:
-        `https://www.instagram.com/${partes[0]}/${encodeURIComponent(partes[1])}/embed/`,
-      downloadDisponivel: false
+      codigo: match[2],
+      embed: `https://www.instagram.com/${match[1]}/${match[2]}/embed/`,
+      downloadDisponivel: false,
+      mensagem: "Link identificado corretamente."
     });
 
   } catch (error) {
     return res.status(400).json({
       sucesso: false,
-      erro: "Não foi possível processar o link."
+      erro: "Link inválido ou malformado."
     });
   }
 }
+
+
