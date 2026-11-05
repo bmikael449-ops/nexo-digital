@@ -8,7 +8,7 @@ const ALLOWED_HOSTS = new Set([
 const ACTOR_ID = "qUM3Ovny6cGNYNnG0";
 
 function findVideoUrl(value, depth = 0) {
-  if (!value || depth > 6) return null;
+  if (!value || depth > 8) return null;
 
   if (Array.isArray(value)) {
     for (const item of value) {
@@ -20,42 +20,36 @@ function findVideoUrl(value, depth = 0) {
 
   if (typeof value !== "object") return null;
 
-  const keys = [
-    "downloadUrl",
-    "videoUrl",
-    "video_url",
-    "mediaUrl",
-    "media_url",
-    "video",
-    "playUrl",
-    "play_url",
-    "url"
+  // Prioriza os campos específicos de download.
+  const candidates = [
+    value.downloadUrl,
+    value.videoUrl,
+    value.video_url,
+    value.mediaUrl,
+    value.media_url,
+    value.playUrl,
+    value.play_url
   ];
 
-  for (const key of keys) {
-    const valueUrl = value[key];
-
-    if (typeof valueUrl !== "string") continue;
+  for (const candidate of candidates) {
+    if (typeof candidate !== "string") continue;
 
     try {
-      const candidate = new URL(valueUrl);
+      const parsed = new URL(candidate.trim());
 
       if (
-        candidate.protocol === "https:" &&
-        !ALLOWED_HOSTS.has(candidate.hostname.toLowerCase())
+        parsed.protocol === "https:" &&
+        parsed.pathname.toLowerCase().includes(".mp4")
       ) {
-        return candidate.href;
+        return parsed.href;
       }
     } catch {
-      // Ignora URLs inválidas.
+      // Ignora endereços inválidos.
     }
   }
 
-  for (const [key, nested] of Object.entries(value)) {
-    if (
-      typeof nested === "object" &&
-      nested !== null
-    ) {
+  for (const nested of Object.values(value)) {
+    if (nested && typeof nested === "object") {
       const found = findVideoUrl(nested, depth + 1);
       if (found) return found;
     }
@@ -181,34 +175,68 @@ export default async function handler(req, res) {
       String(item?.mediaType || "").toLowerCase() === "video"
     );
 
-    const downloadUrl = findVideoUrl(
-      videoItem || items
-    );
+    if (!videoItem) {
+      return res.status(200).json({
+        sucesso: true,
+        embed: `https://www.instagram.com/${match[1]}/${match[2]}/embed/`,
+        downloadDisponivel: false,
+        mensagem: "Não foi encontrado um vídeo nesta publicação."
+      });
+    }
+
+    // Primeiro tenta o endereço específico dentro de downloads.
+    const downloadUrl =
+      videoItem?.downloads?.find(item =>
+        typeof item?.downloadUrl === "string" &&
+        item.downloadUrl.startsWith("https://")
+      )?.downloadUrl ||
+      videoItem?.videoUrl ||
+      findVideoUrl(videoItem);
 
     const embedUrl =
       `https://www.instagram.com/${match[1]}/${match[2]}/embed/`;
 
     if (!downloadUrl) {
-      console.log(
-        "Publicação encontrada, mas sem URL de vídeo reconhecida."
-      );
+      console.log("Vídeo encontrado, mas sem URL de download.");
 
       return res.status(200).json({
         sucesso: true,
         embed: embedUrl,
+        thumbnail: videoItem.thumbnailUrl || null,
         downloadDisponivel: false,
-        mensagem:
-          "Publicação encontrada, mas o provedor não retornou um endereço de vídeo disponível."
+        mensagem: "Não foi possível obter o endereço de download."
       });
     }
 
-    console.log("Link de vídeo encontrado.");
+    // Confirma que o endereço é HTTPS.
+    let validDownloadUrl;
+
+    try {
+      validDownloadUrl = new URL(downloadUrl);
+
+      if (validDownloadUrl.protocol !== "https:") {
+        throw new Error("URL insegura");
+      }
+    } catch {
+      return res.status(502).json({
+        sucesso: false,
+        erro: "O endereço do vídeo retornado é inválido."
+      });
+    }
+
+    console.log("Link de vídeo encontrado com sucesso.");
 
     return res.status(200).json({
       sucesso: true,
       embed: embedUrl,
+      thumbnail: videoItem.thumbnailUrl || null,
       downloadDisponivel: true,
-      downloadUrl
+      downloadUrl: validDownloadUrl.href,
+      formato: "MP4",
+      duracao: videoItem.videoDuration || null,
+      largura: videoItem.downloads?.[0]?.largura || null,
+      altura: videoItem.downloads?.[0]?.altura || null,
+      autor: videoItem.autorUsername || null
     });
 
   } catch (error) {
@@ -227,4 +255,5 @@ export default async function handler(req, res) {
     });
   }
 }
+
 
