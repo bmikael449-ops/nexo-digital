@@ -1,99 +1,85 @@
 
 /* ==========================================
    CASA COM ESTILO
-   CADASTRO DOS PRODUTOS
-   ==========================================
-
-   Para cadastrar produtos, edite a lista abaixo.
-
-   link: coloque seu link de afiliado verdadeiro.
-   imagem: caminho da foto dentro da pasta images.
-*/
+   PRODUTOS E LINKS DE AFILIADOS
+   MERCADO LIVRE
+   ========================================== */
 
 var PRODUTOS = [
   {
-    nome: "Vaso decorativo de cerâmica",
+    nome: "Toalha de Mesa Rústica Retangular 6 Lugares",
     cat: "Sala",
-    de: 129.90,
-    por: 69.90,
-    parcela: "3x de R$ 23,30 sem juros",
-    nota: 4.8,
-    av: 1420,
-    tag: "Mais vendido",
-    emoji: "🏺",
-    cor: "#f0dcc4",
+    de: null,
+    por: null,
+    parcela: "",
+    nota: null,
+    av: null,
+    tag: "Decoração",
+    emoji: "🤎",
+    cor: "#e9dcc9",
     imagem: "",
-    link: "#"
+    plataforma: "Mercado Livre",
+    link: "https://meli.la/2KSSdL2"
   },
   {
-    nome: "Kit 3 quadros decorativos com moldura",
-    cat: "Sala",
-    de: 219.90,
-    por: 119.90,
-    parcela: "4x de R$ 30,00 sem juros",
-    nota: 4.6,
-    av: 980,
-    tag: "Destaque",
-    emoji: "🖼️",
-    cor: "#dde6d8",
+    nome: "Kit Decoração de Natal com Cortinas, Toalha e Balões",
+    cat: "Natal",
+    de: null,
+    por: null,
+    parcela: "",
+    nota: null,
+    av: null,
+    tag: "Especial de Natal",
+    emoji: "🎄",
+    cor: "#e8d8cf",
     imagem: "",
-    link: "#"
+    plataforma: "Mercado Livre",
+    link: "https://meli.la/21895Ec"
   },
   {
-    nome: "Luminária de mesa LED",
-    cat: "Quarto",
-    de: 159.90,
-    por: 89.90,
-    parcela: "3x de R$ 30,00 sem juros",
-    nota: 4.7,
-    av: 2210,
-    tag: "Menor preço",
-    emoji: "💡",
-    cor: "#f6e7b8",
-    imagem: "",
-    link: "#"
-  },
-  {
-    nome: "Espelho redondo com moldura",
-    cat: "Quarto",
-    de: 249.90,
-    por: 139.90,
-    parcela: "5x de R$ 28,00 sem juros",
-    nota: 4.5,
-    av: 760,
-    tag: "",
-    emoji: "🪞",
-    cor: "#e4dcef",
-    imagem: "",
-    link: "#"
-  },
-  {
-    nome: "Kit 3 vasos para plantas",
-    cat: "Jardim",
-    de: 99.90,
-    por: 54.90,
-    parcela: "2x de R$ 27,45 sem juros",
-    nota: 4.7,
-    av: 1890,
-    tag: "Mais vendido",
-    emoji: "🪴",
-    cor: "#d5e8d2",
-    imagem: "",
-    link: "#"
-  },
-  {
-    nome: "Jogo de 4 velas aromáticas",
+    nome: "Balcão de Cozinha Veneza Multimóveis Branco 190 cm",
     cat: "Cozinha",
-    de: 89.90,
-    por: 49.90,
-    parcela: "2x de R$ 24,95 sem juros",
-    nota: 4.9,
-    av: 3050,
-    tag: "",
-    emoji: "🕯️",
-    cor: "#f8d9cf",
+    de: null,
+    por: null,
+    parcela: "",
+    nota: null,
+    av: null,
+    tag: "Para sua cozinha",
+    emoji: "🍽️",
+    cor: "#e7e5dc",
     imagem: "",
-    link: "#"
+    plataforma: "Mercado Livre",
+    link: "https://meli.la/1baPsov"
+  },
+  {
+    nome: "Cordão de Luzes Natalinas 100 LED Branco Quente 9,5 m",
+    cat: "Natal",
+    de: null,
+    por: null,
+    parcela: "",
+    nota: null,
+    av: null,
+    tag: "Ilumine seu Natal",
+    emoji: "✨",
+    cor: "#f5e9c9",
+    imagem: "",
+    plataforma: "Mercado Livre",
+    link: "https://meli.la/2AibyF9"
+  },
+  {
+    nome: "Conjunto 4 Capas de Almofadas Natal Off White 45x45",
+    cat: "Natal",
+    de: null,
+    por: null,
+    parcela: "",
+    nota: null,
+    av: null,
+    tag: "Decoração natalina",
+    emoji: "🎁",
+    cor: "#eee8df",
+    imagem: "",
+    plataforma: "Mercado Livre",
+    link: "https://meli.la/1Ubn5HH"
   }
 ];
 
@@ -122,12 +108,21 @@ var PRODUTOS = [
   }
 
   function desconto(produto) {
-    if (!produto.de || produto.de <= produto.por) return 0;
+    if (
+      !Number.isFinite(Number(produto.de)) ||
+      !Number.isFinite(Number(produto.por)) ||
+      produto.de <= produto.por ||
+      produto.por <= 0
+    ) {
+      return 0;
+    }
 
     return Math.round(
       (1 - produto.por / produto.de) * 100
     );
   }
+
+  /* CATEGORIAS */
 
   function criarCategorias() {
     var categorias = ["Todos"];
@@ -145,6 +140,7 @@ var PRODUTOS = [
 
       botao.type = "button";
       botao.textContent = categoria;
+
       botao.setAttribute(
         "aria-pressed",
         categoria === atual ? "true" : "false"
@@ -152,7 +148,6 @@ var PRODUTOS = [
 
       botao.addEventListener("click", function () {
         atual = categoria;
-
         criarCategorias();
         renderizar();
       });
@@ -161,9 +156,13 @@ var PRODUTOS = [
     });
   }
 
+  /* CARTÃO DO PRODUTO */
+
   function criarCard(produto) {
     var card = document.createElement("article");
     card.className = "card";
+
+    /* FOTO */
 
     var foto = document.createElement("div");
     foto.className = "pic";
@@ -178,7 +177,10 @@ var PRODUTOS = [
 
       img.onerror = function () {
         img.remove();
-        foto.textContent = produto.emoji || "🏡";
+
+        var emoji = document.createElement("span");
+        emoji.textContent = produto.emoji || "🏡";
+        foto.appendChild(emoji);
       };
 
       foto.appendChild(img);
@@ -186,12 +188,16 @@ var PRODUTOS = [
       foto.textContent = produto.emoji || "🏡";
     }
 
+    /* ETIQUETA */
+
     if (produto.tag) {
       var tag = document.createElement("span");
       tag.className = "tag";
       tag.textContent = produto.tag;
       foto.appendChild(tag);
     }
+
+    /* DESCONTO */
 
     var porcentagem = desconto(produto);
 
@@ -201,6 +207,8 @@ var PRODUTOS = [
       off.textContent = "-" + porcentagem + "%";
       foto.appendChild(off);
     }
+
+    /* INFORMAÇÕES */
 
     var corpo = document.createElement("div");
     corpo.className = "body";
@@ -215,8 +223,14 @@ var PRODUTOS = [
     corpo.appendChild(categoria);
     corpo.appendChild(nome);
 
-    if (Number.isFinite(Number(produto.nota)) &&
-        Number.isFinite(Number(produto.av))) {
+    /* AVALIAÇÕES: SÓ MOSTRA SE FOREM INFORMADAS */
+
+    if (
+      Number.isFinite(Number(produto.nota)) &&
+      produto.nota !== null &&
+      produto.av !== null &&
+      Number.isFinite(Number(produto.av))
+    ) {
       var avaliacao = document.createElement("div");
       avaliacao.className = "rate";
 
@@ -224,6 +238,7 @@ var PRODUTOS = [
       estrela.textContent = "★";
 
       avaliacao.appendChild(estrela);
+
       avaliacao.appendChild(
         document.createTextNode(
           " " +
@@ -237,21 +252,39 @@ var PRODUTOS = [
       corpo.appendChild(avaliacao);
     }
 
+    /* PREÇOS */
+
     var preco = document.createElement("div");
     preco.className = "price";
 
-    if (produto.de && produto.de > produto.por) {
-      var antigo = document.createElement("span");
-      antigo.className = "old";
-      antigo.textContent = "De " + brl(produto.de);
-      preco.appendChild(antigo);
+    var temPreco =
+      Number.isFinite(Number(produto.por)) &&
+      produto.por !== null &&
+      Number(produto.por) > 0;
+
+    if (temPreco) {
+      if (
+        Number.isFinite(Number(produto.de)) &&
+        produto.de !== null &&
+        produto.de > produto.por
+      ) {
+        var antigo = document.createElement("span");
+        antigo.className = "old";
+        antigo.textContent = "De " + brl(produto.de);
+        preco.appendChild(antigo);
+      }
+
+      var novo = document.createElement("div");
+      novo.className = "new";
+      novo.textContent = brl(produto.por);
+      preco.appendChild(novo);
+    } else {
+      var consultar = document.createElement("div");
+      consultar.className = "new";
+      consultar.style.fontSize = "17px";
+      consultar.textContent = "Consultar preço";
+      preco.appendChild(consultar);
     }
-
-    var novo = document.createElement("div");
-    novo.className = "new";
-    novo.textContent = brl(produto.por);
-
-    preco.appendChild(novo);
 
     if (produto.parcela) {
       var parcela = document.createElement("span");
@@ -261,6 +294,19 @@ var PRODUTOS = [
     }
 
     corpo.appendChild(preco);
+
+    /* PLATAFORMA */
+
+    if (produto.plataforma) {
+      var plataforma = document.createElement("small");
+      plataforma.style.display = "block";
+      plataforma.style.marginTop = "8px";
+      plataforma.style.color = "#82796e";
+      plataforma.textContent = "Oferta em " + produto.plataforma;
+      corpo.appendChild(plataforma);
+    }
+
+    /* BOTÃO DE COMPRA */
 
     var comprar = document.createElement("a");
     comprar.className = "buy";
@@ -274,15 +320,15 @@ var PRODUTOS = [
       comprar.target = "_blank";
       comprar.rel = "noopener noreferrer sponsored";
       comprar.textContent = "Ver oferta →";
+
       comprar.setAttribute(
         "aria-label",
         "Ver oferta de " + produto.nome
       );
     } else {
       comprar.href = "#produtos";
-      comprar.textContent = "Link de compra em configuração";
+      comprar.textContent = "Oferta indisponível";
       comprar.setAttribute("aria-disabled", "true");
-      comprar.style.opacity = "0.65";
 
       comprar.addEventListener("click", function (event) {
         event.preventDefault();
@@ -297,6 +343,8 @@ var PRODUTOS = [
     return card;
   }
 
+  /* PESQUISA, FILTROS E ORDENAÇÃO */
+
   function renderizar() {
     grid.innerHTML = "";
 
@@ -305,7 +353,8 @@ var PRODUTOS = [
         atual === "Todos" || produto.cat === atual;
 
       var texto =
-        (produto.nome + " " + produto.cat).toLowerCase();
+        (produto.nome + " " + produto.cat + " " +
+        (produto.plataforma || "")).toLowerCase();
 
       var pesquisaCorreta =
         texto.includes(pesquisa.toLowerCase());
@@ -315,13 +364,13 @@ var PRODUTOS = [
 
     if (sort.value === "low") {
       lista.sort(function (a, b) {
-        return a.por - b.por;
+        return (a.por || Infinity) - (b.por || Infinity);
       });
     }
 
     if (sort.value === "high") {
       lista.sort(function (a, b) {
-        return b.por - a.por;
+        return (b.por || 0) - (a.por || 0);
       });
     }
 
@@ -345,7 +394,7 @@ var PRODUTOS = [
     grid.hidden = lista.length === 0;
   }
 
-  /* PESQUISA */
+  /* CAMPO DE PESQUISA */
 
   search.addEventListener("input", function () {
     pesquisa = search.value.trim();
