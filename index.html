@@ -2,50 +2,173 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Decoração com estilo: ofertas para renovar sua casa</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=DM+Sans:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f5ef">
+  <meta name="description" content="Descubra ofertas de decoração, organização, iluminação e produtos para transformar sua casa gastando menos.">
+  <title>Casa com Estilo | Decoração e Ofertas para sua Casa</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header class="hero">
-  <div class="wrap">
-    <div>
-      <span class="eyebrow">DECORAÇÃO PARA CADA CANTO DA CASA</span>
-      <h1>Renove sua casa com estilo e economize</h1>
-      <p>Peças de decoração selecionadas com ótimos preços, direto nas lojas oficiais.</p>
-      <a class="cta" href="#produtos">Ver produtos</a>
-    </div>
-
-    <div class="art">
-      <img src="images/painel-natal.png" alt="Painel decorativo de Natal">
-    </div>
-
-    <div class="trust">
-      <div><b>Lojas oficiais</b>Você compra direto na loja.</div>
-      <div><b>Pagamento seguro</b>Pague no site da loja.</div>
-      <div><b>Entrega pela loja</b>Acompanhe o pedido por lá.</div>
-    </div>
+  <div class="top-strip">
+    ✨ Inspiração, beleza e economia para sua casa
   </div>
-</header>
 
-<main class="wrap" id="produtos">
-  <div class="bar" id="bar" role="group" aria-label="Filtrar por ambiente"></div>
-  <h2>Escolhidos para você</h2>
-  <p class="sub">Confira o preço final na loja antes de concluir a compra.</p>
-  <div class="grid" id="grid"></div>
-</main>
+  <header class="header">
+    <div class="wrap header-inner">
+      <a href="#" class="brand">
+        <span class="brand-icon">⌂</span>
+        <span>CASA <b>COM ESTILO</b><small>DECORAÇÃO & OFERTAS</small></span>
+      </a>
 
-<footer>
-  <div class="wrap">
-    Alguns links desta página são links de afiliado: se você comprar por eles, posso receber uma comissão, sem custo extra para você. Preços e disponibilidade podem mudar sem aviso e são de responsabilidade da loja. Imagens meramente ilustrativas.
-  </div>
-</footer>
+      <nav class="navigation" aria-label="Menu principal">
+        <a href="#inicio">Início</a>
+        <a href="#categorias">Categorias</a>
+        <a href="#produtos">Ofertas</a>
+        <a href="#sobre">Sobre</a>
+      </nav>
 
-<script src="script.js"></script>
+      <a href="#produtos" class="header-button">Ver ofertas <span>→</span></a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="wrap hero-grid">
+        <div class="hero-content">
+          <span class="eyebrow">SEU LAR MERECE ESSE CARINHO</span>
+          <h1>Uma casa bonita começa com <em>bons detalhes.</em></h1>
+          <p>Encontre decoração, organização e produtos especiais para deixar cada cantinho da sua casa ainda mais aconchegante.</p>
+
+          <div class="hero-actions">
+            <a href="#produtos" class="primary-button">Descobrir ofertas <span>→</span></a>
+            <span class="hero-note">Inspiração para todos os ambientes</span>
+          </div>
+
+          <div class="hero-features">
+            <div><span>♡</span> Produtos selecionados</div>
+            <div><span>✦</span> Ofertas especiais</div>
+          </div>
+        </div>
+
+        <div class="hero-image">
+          <img src="images/painel-natal.png" alt="Inspiração de decoração para casa" onerror="this.style.display='none';this.parentElement.classList.add('image-fallback')">
+          <div class="image-caption">
+            <span>SEU LAR, SEU ESTILO</span>
+            <b>Pequenos detalhes, grandes transformações.</b>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="benefits">
+      <div class="wrap benefits-grid">
+        <div><span>♡</span><div><b>Escolhas especiais</b><small>Produtos selecionados</small></div></div>
+        <div><span>✧</span><div><b>Mais economia</b><small>Encontre boas ofertas</small></div></div>
+        <div><span>⌂</span><div><b>Compre nas lojas</b><small>Compra direto no parceiro</small></div></div>
+      </div>
+    </section>
+
+    <section class="categories-section wrap" id="categorias">
+      <div class="section-heading">
+        <span class="eyebrow">EXPLORE NOSSO UNIVERSO</span>
+        <h2>Encontre seu próximo detalhe favorito</h2>
+        <p>Inspiração para cada cantinho da sua casa.</p>
+      </div>
+
+      <div class="category-tiles">
+        <a href="#produtos" data-category="Sala" class="category-tile">
+          <span>🛋️</span><b>Sala</b><small>Conforto e beleza</small>
+        </a>
+        <a href="#produtos" data-category="Quarto" class="category-tile">
+          <span>🛏️</span><b>Quarto</b><small>Seu espaço de descanso</small>
+        </a>
+        <a href="#produtos" data-category="Cozinha" class="category-tile">
+          <span>🍽️</span><b>Cozinha</b><small>Praticidade e charme</small>
+        </a>
+        <a href="#produtos" data-category="Jardim" class="category-tile">
+          <span>🌿</span><b>Jardim</b><small>Natureza em casa</small>
+        </a>
+        <a href="#produtos" data-category="Natal" class="category-tile">
+          <span>🎄</span><b>Natal</b><small>Momentos especiais</small>
+        </a>
+      </div>
+    </section>
+
+    <section class="products-section" id="produtos">
+      <div class="wrap">
+        <div class="section-heading products-heading">
+          <span class="eyebrow">SELEÇÃO ESPECIAL</span>
+          <h2>Achadinhos para sua casa</h2>
+          <p>Confira os produtos e encontre seu próximo favorito.</p>
+        </div>
+
+        <div class="search-area">
+          <label class="search-box">
+            <span>⌕</span>
+            <input type="search" id="search" placeholder="O que você procura hoje?" aria-label="Pesquisar produtos">
+          </label>
+          <select id="sort" aria-label="Ordenar produtos">
+            <option value="default">Ordenar por</option>
+            <option value="low">Menor preço</option>
+            <option value="high">Maior preço</option>
+            <option value="discount">Maior desconto</option>
+          </select>
+        </div>
+
+        <div class="bar" id="bar" aria-label="Filtrar produtos por categoria"></div>
+
+        <div class="results-line">
+          <span id="result-count">Produtos selecionados</span>
+          <span>Preços sujeitos a alteração na loja.</span>
+        </div>
+
+        <div class="grid" id="grid"></div>
+
+        <div class="empty-state" id="empty" hidden>
+          <span>⌕</span>
+          <h3>Nenhum produto encontrado</h3>
+          <p>Tente pesquisar por outro nome ou categoria.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="about-section" id="sobre">
+      <div class="wrap about-content">
+        <span class="eyebrow">BEM-VINDO À CASA COM ESTILO</span>
+        <h2>Inspiração para viver melhor dentro de casa.</h2>
+        <p>Nosso objetivo é reunir ideias, produtos e oportunidades para você transformar seus ambientes com beleza, praticidade e economia.</p>
+        <a href="#produtos" class="primary-button">Explorar produtos →</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <a href="#inicio" class="brand footer-brand">
+        <span class="brand-icon">⌂</span>
+        <span>CASA <b>COM ESTILO</b><small>DECORAÇÃO & OFERTAS</small></span>
+      </a>
+
+      <p>Seu espaço merece inspiração.</p>
+
+      <div class="footer-disclosure">
+        Alguns links desta página são links de afiliados. Podemos receber uma comissão caso você compre por meio deles, sem custo adicional para você. Os preços, condições e disponibilidade são definidos pelas lojas parceiras e podem mudar sem aviso prévio. Imagens meramente ilustrativas.
+      </div>
+
+      <div class="copyright">© <span id="year"></span> Casa com Estilo. Todos os direitos reservados.</div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
+
 
 
